@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 apply plugin: 'com.android.application'
@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId "tristan.hessell.pizza.wikiticulate.app"
-        minSdkVersion 19
+        minSdkVersion 8
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
