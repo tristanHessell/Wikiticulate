@@ -7,11 +7,19 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
 {
+    private int numPlayers;
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
+
+        numPlayers = getIntent().getIntExtra( "numPlayers", -1 );
+        //if(numPlayers == -1)
+        //{
+            //TODO cry as the number of players wasnt set.
+        //}
     }
 
     @Override
