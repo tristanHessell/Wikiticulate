@@ -3,11 +3,13 @@ package tristan.hessell.pizza.wikiticulate.app;
 import android.app.Application;
 
 /**
- * Created by manko on 8/08/15.
+ * Created by jsj on 8/08/15.
  */
 public class WikitulateApplication extends Application {
 
-    WikitulateApplication() {
-        super();
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
     }
 }
