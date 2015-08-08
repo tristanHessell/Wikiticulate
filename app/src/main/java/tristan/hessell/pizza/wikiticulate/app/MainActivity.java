@@ -1,6 +1,9 @@
 package tristan.hessell.pizza.wikiticulate.app;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -8,6 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Formatter;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -42,6 +48,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startRound() {
+
+        // TODO: move the limit to the rules class
+        new CountDownTimer(5 * 1000, 30) {
+
+            TextView timerText = (TextView) findViewById(R.id.timerText);
+
+            public void onTick(long millisUntilFinished) {
+                long minutes = (millisUntilFinished / 1000 / 60) % 60;
+                long seconds = (millisUntilFinished / 1000) % 60;
+                long ms = millisUntilFinished % 1000;
+
+                String time = String.format("%02d:%02d:%03d", minutes, seconds, ms);
+
+                timerText.setText(time);
+            }
+
+            public void onFinish() {
+                String time = String.format("%02d:%02d:%03d", 0, 0, 0);
+                timerText.setTextColor(Color.parseColor("#FF0000"));
+            }
+        }.start();
+
         mArticleText.setVisibility(View.VISIBLE);
         Button passButton = (Button) findViewById(R.id.passButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
