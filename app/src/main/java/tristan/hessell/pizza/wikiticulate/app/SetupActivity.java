@@ -25,8 +25,6 @@ public class SetupActivity extends AppCompatActivity
         npNumPlayers = (NumberPicker)findViewById( R.id.npNumPlayers );
         npNumPlayers.setMinValue( MIN_PLAYERS );
         npNumPlayers.setMaxValue( MAX_PLAYERS );
-
-
     }
 
 
