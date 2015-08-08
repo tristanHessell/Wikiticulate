@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -27,6 +28,12 @@ public class MainActivity extends AppCompatActivity
 
         Log.d("MainActivity",
                 application.getArticleCount() + " articles available after onCreate()");
+
+        if(application.getArticleCount() > 0)
+        {
+            TextView text = (TextView) findViewById(R.id.articleTitleText);
+            text.setText(application.getNextArticle());
+        }
     }
 
     @Override

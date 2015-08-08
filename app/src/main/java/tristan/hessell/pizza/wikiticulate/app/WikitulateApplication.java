@@ -19,7 +19,7 @@ import java.util.Queue;
 public class WikitulateApplication extends Application {
 
     /** The point at which the article downloader will stop. */
-    final static private int           HIGHWATER = 50;
+    final static private int           HIGHWATER = 30;
 
     /** The point at which the article downloader will start */
     final static private int           LOWWATER  = 10;
@@ -38,7 +38,9 @@ public class WikitulateApplication extends Application {
         mArticleTitles = new LinkedList<String>();
 
         mRefiller = new RefillArticlesTask();
-        mRefiller.execute(HIGHWATER);
+
+        /* Get the smallest number of articles to begin with as we don't want setup to take long. */
+        mRefiller.execute(LOWWATER);
     }
 
     private class RefillArticlesTask extends AsyncTask<Integer, Void, Void> {
