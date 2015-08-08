@@ -17,7 +17,8 @@ public class RandomApi {
         String        urlToRead = API_URL + "action=query" 
                                           + "&list=random" 
                                           + "&rnlimit=" + count 
-                                          + "&format=json";
+                                          + "&format=json"
+                                          + "&rnnamespace=0";
         try {
             URL               url  = new URL(urlToRead);
             

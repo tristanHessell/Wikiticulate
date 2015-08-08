@@ -2,6 +2,7 @@ package tristan.hessell.pizza.wikiticulate.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,11 +16,17 @@ public class MainActivity extends AppCompatActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
 
+
         numPlayers = getIntent().getIntExtra( "numPlayers", -1 );
         //if(numPlayers == -1)
         //{
             //TODO cry as the number of players wasnt set.
         //}
+
+        WikitulateApplication application = (WikitulateApplication) getApplication();
+
+        Log.d("MainActivity",
+                application.getArticleCount() + " articles available after onCreate()");
     }
 
     @Override
