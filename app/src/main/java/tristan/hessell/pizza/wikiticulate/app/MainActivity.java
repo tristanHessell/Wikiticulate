@@ -2,8 +2,10 @@ package tristan.hessell.pizza.wikiticulate.app;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +22,28 @@ public class MainActivity extends AppCompatActivity
     private int      mNumPlayers;
     private TextView mArticleText;
     private WikitulateApplication mApplication;
+
+    private class PollTimerTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... v) {
+
+            while(mApplication.getTimer().getRoundTime() > 30) {
+                publishProgress();
+                SystemClock.sleep(30);
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(Void... v) {
+            TextView timerText = (TextView) findViewById(R.id.timerText);
+            timerText.setText(mApplication.getTimer().formatRoundTime());
+        }
+
+        protected void onPostExecute(Void v) {
+            TextView timerText = (TextView) findViewById(R.id.timerText);
+            String time = String.format("%02d:%02d:%03d", 0, 0, 0);
+            timerText.setTextColor(Color.parseColor("#FF0000"));
+        }
+    }
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -41,35 +65,17 @@ public class MainActivity extends AppCompatActivity
         Log.d("MainActivity",
                 mApplication.getArticleCount() + " articles available after onCreate()");
 
-        if(mApplication.getArticleCount() > 0)
-        {
-            mArticleText.setText(mApplication.getNextArticle());
+        if(mApplication.isRoundInProgress()) {
+            setInRoundMode();
+            new PollTimerTask().execute();
+        }
+        else {
+            setOutOfRoundMode();
         }
     }
 
-    private void startRound() {
-
-        // TODO: move the limit to the rules class
-        new CountDownTimer(5 * 1000, 30) {
-
-            TextView timerText = (TextView) findViewById(R.id.timerText);
-
-            public void onTick(long millisUntilFinished) {
-                long minutes = (millisUntilFinished / 1000 / 60) % 60;
-                long seconds = (millisUntilFinished / 1000) % 60;
-                long ms = millisUntilFinished % 1000;
-
-                String time = String.format("%02d:%02d:%03d", minutes, seconds, ms);
-
-                timerText.setText(time);
-            }
-
-            public void onFinish() {
-                String time = String.format("%02d:%02d:%03d", 0, 0, 0);
-                timerText.setTextColor(Color.parseColor("#FF0000"));
-            }
-        }.start();
-
+    private void setInRoundMode() {
+        mArticleText.setText(mApplication.getCurrentArticle());
         mArticleText.setVisibility(View.VISIBLE);
         Button passButton = (Button) findViewById(R.id.passButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
@@ -78,7 +84,29 @@ public class MainActivity extends AppCompatActivity
         passButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
+    }
 
+    private void setOutOfRoundMode() {
+        mArticleText.setVisibility(View.GONE);
+        Button passButton = (Button) findViewById(R.id.passButton);
+        Button nextButton = (Button) findViewById(R.id.nextButton);
+        Button startButton = (Button) findViewById(R.id.startButton);
+
+        passButton.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
+        startButton.setVisibility(View.VISIBLE);
+    }
+
+    private void startRound() {
+
+        if(mApplication.getArticleCount() > 0)
+        {
+            mApplication.getNextArticle();
+        }
+
+        mApplication.startNewRound();
+        setInRoundMode();
+        new PollTimerTask().execute();
     }
 
     private void pass() {

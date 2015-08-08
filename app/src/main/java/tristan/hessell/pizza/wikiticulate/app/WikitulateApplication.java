@@ -9,6 +9,9 @@ import android.util.Log;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -27,6 +30,13 @@ public class WikitulateApplication extends Application {
     /** A queue of article titles. */
     private Queue<String>      mArticleTitles;
 
+    private GameTimer          mGameTimer;
+
+    private int mRound;
+    private boolean mRoundInProgress;
+
+    String mCurrentArticle;
+
     /** The background task responsible for getting new article titles. */
     private RefillArticlesTask mRefiller;
 
@@ -35,12 +45,18 @@ public class WikitulateApplication extends Application {
     {
         super.onCreate();
 
+        mRound = 0;
+        mRoundInProgress = false;
+
         mArticleTitles = new LinkedList<String>();
+        mCurrentArticle = "";
 
         mRefiller = new RefillArticlesTask();
 
         /* Get the smallest number of articles to begin with as we don't want setup to take long. */
         mRefiller.execute(LOWWATER);
+
+        mGameTimer = new GameTimer();
     }
 
     private class RefillArticlesTask extends AsyncTask<Integer, Void, Void> {
@@ -51,12 +67,40 @@ public class WikitulateApplication extends Application {
         }
     }
 
+    public boolean isRoundInProgress() {
+        return mRoundInProgress;
+    }
+
+    public void startNewRound(){
+        if(mRoundInProgress) {
+            // bad
+        }
+        mGameTimer.startRound();
+        mRound++;
+        mRoundInProgress = true;
+    }
+
+    public void stopRound(){
+        if(!mRoundInProgress) {
+            // bad
+        }
+        mRoundInProgress = false;
+    }
+
+    public GameTimer getTimer() {
+        return mGameTimer;
+    }
+
     public int getArticleCount() {
         return mArticleTitles.size();
     }
 
+    public String getCurrentArticle() {
+        return mCurrentArticle;
+    }
+
     public String getNextArticle() {
-        String result = mArticleTitles.remove();
+        mCurrentArticle = mArticleTitles.remove();
 
         /* Try and refill the articles if we have reached the low water mark, but check that we
         * are not already doing it first. */
@@ -67,7 +111,7 @@ public class WikitulateApplication extends Application {
                 mRefiller.execute(HIGHWATER - LOWWATER);
             }
         }
-        return result;
+        return mCurrentArticle;
     }
 
 }
