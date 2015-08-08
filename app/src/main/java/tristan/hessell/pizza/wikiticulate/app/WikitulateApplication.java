@@ -108,7 +108,7 @@ public class WikitulateApplication extends Application {
             if(mRefiller.getStatus() != AsyncTask.Status.RUNNING)
             {
                 mRefiller = new RefillArticlesTask();
-                mRefiller.execute(HIGHWATER - LOWWATER);
+                mRefiller.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, HIGHWATER - LOWWATER);
             }
         }
         return mCurrentArticle;

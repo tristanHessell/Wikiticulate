@@ -2,6 +2,7 @@ package tristan.hessell.pizza.wikiticulate.app;
 
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -45,13 +46,16 @@ public class GameTimer {
     }
 
     public void startRound() {
+        Log.d("GameTimer", "Starting Timer");
         new CountDownTimer(30 * 1000, 30) {
 
             public void onTick(long ms) {
+//                Log.v("ROUNDTIMER", "Tick: " + ms);
                 mRoundTime.setTimeInMillis(ms);
             }
 
             public void onFinish() {
+                Log.d("GameTimer", "Stopping Timer");
                 mRoundTime.setTimeInMillis(0);
             }
         }.start();

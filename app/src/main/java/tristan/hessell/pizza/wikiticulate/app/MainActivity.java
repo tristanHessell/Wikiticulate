@@ -21,12 +21,18 @@ public class MainActivity extends AppCompatActivity
 {
     private int      mNumPlayers;
     private TextView mArticleText;
+    private TextView mTimerText;
     private WikitulateApplication mApplication;
+    private PollTimerTask mPollTimer;
 
     private class PollTimerTask extends AsyncTask<Void, Void, Void> {
-        protected Void doInBackground(Void... v) {
 
-            while(mApplication.getTimer().getRoundTime() > 30) {
+        boolean first;
+
+        protected Void doInBackground(Void... v) {
+            first = true;
+            while(!isCancelled() && mApplication.isRoundInProgress()) {
+//                Log.v("MainActivity", "PollTimer Tick");
                 publishProgress();
                 SystemClock.sleep(30);
             }
@@ -34,14 +40,31 @@ public class MainActivity extends AppCompatActivity
         }
 
         protected void onProgressUpdate(Void... v) {
-            TextView timerText = (TextView) findViewById(R.id.timerText);
-            timerText.setText(mApplication.getTimer().formatRoundTime());
+            if(first) {
+                Log.v("MainActivity", "PollTimer Progress");
+                first = false;
+            }
+//            Log.v("MainActivity", mApplication.getTimer().formatRoundTime());
+            mTimerText.setText(mApplication.getTimer().formatRoundTime());
         }
 
         protected void onPostExecute(Void v) {
-            TextView timerText = (TextView) findViewById(R.id.timerText);
+            // TODO: move this to GameTimer to ensure always the same formatting
             String time = String.format("%02d:%02d:%03d", 0, 0, 0);
-            timerText.setTextColor(Color.parseColor("#FF0000"));
+            mTimerText.setText(time);
+
+            Log.d("MainActivity", "Polltimer finished");
+//            mTimerText.setTextColor(Color.parseColor("#FF0000"));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("MainActivity", "OnDestroy");
+        super.onDestroy();
+        if(mPollTimer != null) {
+            Log.e("MainActivity", "Cancelling polltimer");
+            mPollTimer.cancel(true);
         }
     }
 
@@ -55,26 +78,31 @@ public class MainActivity extends AppCompatActivity
         mNumPlayers = getIntent().getIntExtra( "numPlayers", -1 );
         //if(mNumPlayers == -1)
         //{
-            //TODO cry as the number of players wasnt set.
+        //TODO cry as the number of players wasnt set.
         //}
 
         mApplication = (WikitulateApplication) getApplication();
 
+        mTimerText   = (TextView) findViewById(R.id.timerText);
         mArticleText = (TextView) findViewById(R.id.articleTitleText);
 
         Log.d("MainActivity",
                 mApplication.getArticleCount() + " articles available after onCreate()");
 
         if(mApplication.isRoundInProgress()) {
+            Log.d("MainActivity", "Creating MainActivity in Round Mode.");
             setInRoundMode();
-            new PollTimerTask().execute();
         }
         else {
+            Log.d("MainActivity", "Creating MainActivity in Out of Round Mode.");
             setOutOfRoundMode();
         }
     }
 
     private void setInRoundMode() {
+        Log.d("MainActivity", "Creating PollTimer");
+        mPollTimer = new PollTimerTask();
+        mPollTimer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         mArticleText.setText(mApplication.getCurrentArticle());
         mArticleText.setVisibility(View.VISIBLE);
         Button passButton = (Button) findViewById(R.id.passButton);
@@ -84,9 +112,14 @@ public class MainActivity extends AppCompatActivity
         passButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
+        mTimerText.setTextColor(Color.parseColor("#000000"));
     }
 
     private void setOutOfRoundMode() {
+        if(mPollTimer != null) {
+            Log.e("MainActivity", "Cancelling polltimer");
+            mPollTimer.cancel(true);
+        }
         mArticleText.setVisibility(View.GONE);
         Button passButton = (Button) findViewById(R.id.passButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
@@ -106,7 +139,6 @@ public class MainActivity extends AppCompatActivity
 
         mApplication.startNewRound();
         setInRoundMode();
-        new PollTimerTask().execute();
     }
 
     private void pass() {
