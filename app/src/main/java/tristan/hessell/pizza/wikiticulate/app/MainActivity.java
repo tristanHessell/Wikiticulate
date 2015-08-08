@@ -27,11 +27,14 @@ public class MainActivity extends AppCompatActivity
 
     private class PollTimerTask extends AsyncTask<Void, Void, Void> {
 
-        boolean first;
+        boolean started;
 
         protected Void doInBackground(Void... v) {
-            first = true;
-            while(!isCancelled() && mApplication.isRoundInProgress()) {
+            started = false;
+            while(!isCancelled() || !started) {
+                if(mApplication.getTimer().getRoundTime() > 0) {
+                    started = true;
+                }
 //                Log.v("MainActivity", "PollTimer Tick");
                 publishProgress();
                 SystemClock.sleep(30);
@@ -40,11 +43,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         protected void onProgressUpdate(Void... v) {
-            if(first) {
-                Log.v("MainActivity", "PollTimer Progress");
-                first = false;
-            }
-//            Log.v("MainActivity", mApplication.getTimer().formatRoundTime());
             mTimerText.setText(mApplication.getTimer().formatRoundTime());
         }
 
