@@ -14,8 +14,10 @@ import java.util.GregorianCalendar;
 public class GameTimer {
     private GregorianCalendar mGameTime;
     private GregorianCalendar mRoundTime;
+    private WikitulateApplication mApplication;
 
-    GameTimer() {
+    GameTimer(WikitulateApplication application) {
+        mApplication = application;
         mGameTime  = new GregorianCalendar();
         mRoundTime = new GregorianCalendar();
         mGameTime.setTimeInMillis(0);
@@ -47,7 +49,7 @@ public class GameTimer {
 
     public void startRound() {
         Log.d("GameTimer", "Starting Timer");
-        new CountDownTimer(30 * 1000, 30) {
+        new CountDownTimer(5 * 1000, 30) {
 
             public void onTick(long ms) {
 //                Log.v("ROUNDTIMER", "Tick: " + ms);
@@ -57,6 +59,7 @@ public class GameTimer {
             public void onFinish() {
                 Log.d("GameTimer", "Stopping Timer");
                 mRoundTime.setTimeInMillis(0);
+                mApplication.onRoundTimeUp();
             }
         }.start();
     }

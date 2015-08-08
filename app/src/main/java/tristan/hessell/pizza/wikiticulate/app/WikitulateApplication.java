@@ -33,6 +33,7 @@ public class WikitulateApplication extends Application {
     private GameTimer          mGameTimer;
 
     private int mRound;
+    private int mRoundScore;
     private boolean mRoundInProgress;
 
     String mCurrentArticle;
@@ -46,6 +47,7 @@ public class WikitulateApplication extends Application {
         super.onCreate();
 
         mRound = 0;
+        mRoundScore = 0;
         mRoundInProgress = false;
 
         mArticleTitles = new LinkedList<String>();
@@ -56,7 +58,7 @@ public class WikitulateApplication extends Application {
         /* Get the smallest number of articles to begin with as we don't want setup to take long. */
         mRefiller.execute(LOWWATER);
 
-        mGameTimer = new GameTimer();
+        mGameTimer = new GameTimer(this);
     }
 
     private class RefillArticlesTask extends AsyncTask<Integer, Void, Void> {
@@ -65,6 +67,10 @@ public class WikitulateApplication extends Application {
             mArticleTitles.addAll(articles);
             return null;
         }
+    }
+
+    public void onRoundTimeUp() {
+        mRoundInProgress = false;
     }
 
     public boolean isRoundInProgress() {
@@ -77,7 +83,16 @@ public class WikitulateApplication extends Application {
         }
         mGameTimer.startRound();
         mRound++;
+        mRoundScore = 0;
         mRoundInProgress = true;
+    }
+
+    public int getRoundScore() {
+        return mRoundScore;
+    }
+
+    public void scoreOne() {
+        mRoundScore++;
     }
 
     public void stopRound(){

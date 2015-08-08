@@ -63,4 +63,15 @@
         android:layout_centerHorizontal="true"
         android:overScrollMode="ifContentScrolls"
         android:textSize="50dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="0"
+        android:id="@+id/scoreText"
+        android:layout_below="@+id/timerText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:textSize="60dp" />
 </RelativeLayout>
