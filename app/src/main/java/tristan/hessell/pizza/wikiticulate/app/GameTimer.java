@@ -49,7 +49,7 @@ public class GameTimer {
 
     public void startRound() {
         Log.d("GameTimer", "Starting Timer");
-        new CountDownTimer(5 * 1000, 30) {
+        new CountDownTimer(mApplication.getRoundDuration(), 30) {
 
             public void onTick(long ms) {
 //                Log.v("ROUNDTIMER", "Tick: " + ms);

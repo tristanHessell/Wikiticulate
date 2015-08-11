@@ -36,6 +36,9 @@ public class WikitulateApplication extends Application {
     private int mRoundScore;
     private boolean mRoundInProgress;
 
+    //The length of the round in milliseconds. Default of 5 seconds
+    private int mRoundDuration = 5 * 1000;
+
     String mCurrentArticle;
 
     /** The background task responsible for getting new article titles. */
@@ -89,6 +92,13 @@ public class WikitulateApplication extends Application {
 
     public int getRoundScore() {
         return mRoundScore;
+    }
+
+    public int getRoundDuration() {return mRoundDuration;}
+
+    public void setRoundDuration(int inDuration)
+    {
+        mRoundDuration = inDuration;
     }
 
     public void scoreOne() {

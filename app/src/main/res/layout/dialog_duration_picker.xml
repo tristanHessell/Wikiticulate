@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:gravity="center_horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <NumberPicker
+            android:id="@+id/npRoundMinutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:descendantFocusability="blocksDescendants"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:text=":"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <NumberPicker
+            android:id="@+id/npRoundSeconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"/>
+</LinearLayout>

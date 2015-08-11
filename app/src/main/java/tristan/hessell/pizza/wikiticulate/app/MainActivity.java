@@ -73,26 +73,23 @@ public class MainActivity extends AppCompatActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
 
-
-        mNumPlayers = getIntent().getIntExtra( "numPlayers", -1 );
-        //if(mNumPlayers == -1)
-        //{
-        //TODO cry as the number of players wasnt set.
-        //}
-
         mApplication = (WikitulateApplication) getApplication();
+
+        ConfigurationObject conf = getIntent().getParcelableExtra( "configuration" );
+        //set the round time
+        mApplication.setRoundDuration( conf.getDuration() );
 
         mTimerText   = (TextView) findViewById(R.id.timerText);
         mArticleText = (TextView) findViewById(R.id.articleTitleText);
 
-        Log.d("MainActivity",
-                mApplication.getArticleCount() + " articles available after onCreate()");
+        Log.d( "MainActivity",
+                mApplication.getArticleCount() + " articles available after onCreate()" );
 
         if(mApplication.isRoundInProgress()) {
             Log.d("MainActivity", "Creating MainActivity in Round Mode.");
             setInRoundMode();
         } else {
-            Log.d("MainActivity", "Creating MainActivity in Out of Round Mode.");
+            Log.d( "MainActivity", "Creating MainActivity in Out of Round Mode." );
             setOutOfRoundMode();
         }
     }
@@ -109,13 +106,13 @@ public class MainActivity extends AppCompatActivity
 
         /* TODO: only if the game rules are "most you can get in a time limit" rather than "Fastest you can get one"*/
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
-        scoreText.setVisibility(View.VISIBLE);
-        scoreText.setText("" + mApplication.getRoundScore());
+        scoreText.setVisibility( View.VISIBLE );
+        scoreText.setText( "" + mApplication.getRoundScore() );
 
         passButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
-        mTimerText.setTextColor(Color.parseColor("#000000"));
+        mTimerText.setTextColor( Color.parseColor( "#000000" ) );
     }
 
     private void setOutOfRoundMode() {
@@ -128,13 +125,13 @@ public class MainActivity extends AppCompatActivity
         Button nextButton = (Button) findViewById(R.id.nextButton);
         Button startButton = (Button) findViewById(R.id.startButton);
 
-        passButton.setVisibility(View.GONE);
-        nextButton.setVisibility(View.GONE);
+        passButton.setVisibility( View.GONE );
+        nextButton.setVisibility( View.GONE );
         startButton.setVisibility(View.VISIBLE);
 
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
         scoreText.setVisibility(View.GONE);
-        scoreText.setText("" + mApplication.getRoundScore());
+        scoreText.setText( "" + mApplication.getRoundScore() );
     }
 
     private void endRound() {
@@ -152,7 +149,7 @@ public class MainActivity extends AppCompatActivity
 
         passButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
-        startButton.setVisibility(View.GONE);
+        startButton.setVisibility( View.GONE );
     }
 
     private void startRound() {
