@@ -21,49 +21,50 @@ public class NumberPickerDialogFragment extends DialogFragment
     private int maxNumber;
     private int defaultNumber;
 
+    public static NumberPickerDialogFragment newInstance(String inTitle, NumberDialogCallback inCb)
+    {
+        NumberPickerDialogFragment frag = new NumberPickerDialogFragment();
+        Bundle args = new Bundle();
+        args.putString( "title", inTitle );
+        args.putParcelable( "callback", inCb );
+        frag.setArguments( args );
+
+        return frag;
+    }
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         getValuesFromArguments(getArguments());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate( R.layout.dialog_number_picker, null );
-
-        /*NumberPicker.Formatter timeFormatter = new NumberPicker.Formatter()
-        {
-            @Override
-            public String format( int value )
-            {
-                return String.format( "%02d", value );
-            }
-        };*/
 
         final NumberPicker npNumber = (NumberPicker)v.findViewById( R.id.npNumber );
         npNumber.setMinValue( minNumber );
         npNumber.setMaxValue( maxNumber );
         npNumber.setValue( defaultNumber );
         npNumber.setWrapSelectorWheel( true );
-        //npNumber.setFormatter( timeFormatter );
 
         bugFix( npNumber );
 
-        builder.setTitle( title )
-                .setView(v)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton)
-                            {
-                                cb.onCallback(npNumber.getValue());
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton)
-                            {}
-                        });
-        return builder.create();
+        return new AlertDialog.Builder(getActivity()).setTitle( title )
+            .setView(v)
+            .setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        cb.onCallback(npNumber.getValue());
+                    }
+                })
+            .setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface dialog, int whichButton )
+                    {}
+                })
+            .create();
     }
 
     /**
@@ -94,6 +95,7 @@ public class NumberPickerDialogFragment extends DialogFragment
         maxNumber = args.getInt( "maxValue", defaultNumber );
     }
 
+    //Ill explain this later - cbf atm
     private void bugFix(NumberPicker np)
     {
         try
@@ -105,7 +107,25 @@ public class NumberPickerDialogFragment extends DialogFragment
         }
         catch( Exception ex )
         {
-            System.out.println( "bug ddint wfddffgdddf" );
+            System.out.println( "Exception in bug fix for numberPicker" );
         }
+    }
+
+    public NumberPickerDialogFragment setDefaultValue(int inDefault)
+    {
+        getArguments().putInt("defaultValue", inDefault);
+        return this;
+    }
+
+    public NumberPickerDialogFragment setMinimumValue(int inMin)
+    {
+        getArguments().putInt( "minValue", inMin );
+        return this;
+    }
+
+    public NumberPickerDialogFragment setMaximumValue(int inMax)
+    {
+        getArguments().putInt( "maxValue", inMax );
+        return this;
     }
 }

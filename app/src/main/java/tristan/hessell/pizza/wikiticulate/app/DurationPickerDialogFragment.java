@@ -24,6 +24,19 @@ public class DurationPickerDialogFragment extends DialogFragment
     private int defaultSeconds;
     private int maxSeconds;
 
+    public static DurationPickerDialogFragment newInstance(String inTitle, DurationDialogCallback inCb)
+    {
+        DurationPickerDialogFragment frag = new DurationPickerDialogFragment();
+        Bundle args = new Bundle();
+        args.putString( "title", inTitle );
+        args.putParcelable( "callback", inCb );
+        frag.setArguments( args );
+
+        return frag;
+    }
+
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -60,17 +73,22 @@ public class DurationPickerDialogFragment extends DialogFragment
         bugFix( npDurationSeconds );
 
         builder.setTitle( title )
-                .setView(v)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                cb.onCallback(npDurationMinutes.getValue(), npDurationSeconds.getValue());
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {}
-                        });
+            .setView( v )
+            .setPositiveButton( "OK",
+                    new DialogInterface.OnClickListener()
+                    {
+                        public void onClick( DialogInterface dialog, int whichButton )
+                        {
+                            cb.onCallback( npDurationMinutes.getValue(), npDurationSeconds.getValue() );
+                        }
+                    } )
+            .setNegativeButton( "Cancel",
+                    new DialogInterface.OnClickListener()
+                    {
+                        public void onClick( DialogInterface dialog, int whichButton )
+                        {
+                        }
+                    } );
         return builder.create();
     }
 
@@ -119,4 +137,28 @@ public class DurationPickerDialogFragment extends DialogFragment
         }
     }
 
+
+    public DurationPickerDialogFragment setMinimumDuration(int minMinutes, int minSeconds)
+    {
+        getArguments().putInt( "minMinutes", minMinutes);
+        getArguments().putInt( "minSeconds", minSeconds);
+
+        return this;
+    }
+
+    public DurationPickerDialogFragment setMaxmimumDuration(int maxMinutes, int maxSeconds)
+    {
+        getArguments().putInt("maxMinutes", maxMinutes);
+        getArguments().putInt("maxSeconds", maxSeconds);
+
+        return this;
+    }
+
+    public DurationPickerDialogFragment setDefaultDuration(int defaultMinutes, int defaultSeconds)
+    {
+        getArguments().putInt( "defaultMinutes", defaultMinutes);
+        getArguments().putInt( "defaultSeconds", defaultSeconds);
+
+        return this;
+    }
 }

@@ -13,6 +13,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class SetupActivity extends AppCompatActivity
 {
@@ -41,6 +43,10 @@ public class SetupActivity extends AppCompatActivity
     private int numPlayers = DEFAULT_PLAYERS;
     private int selectedMinutes = DEFAULT_ROUND_DURATION_MINUTES;
     private int selectedSeconds = DEFAULT_ROUND_DURATION_SECONDS;
+    private CheckBox cbExclusions;
+    private TextView tvExclusions;
+
+    private ArrayList<CheckItem> exclusions;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -49,16 +55,13 @@ public class SetupActivity extends AppCompatActivity
         setContentView( R.layout.activity_setup );
 
         tvDuration = (TextView)findViewById( R.id.tvRoundDuration );
-        tvDuration.setText( String.format("%02d:%02d",selectedMinutes, selectedSeconds) );
+        tvDuration.setText( String.format( "%02d:%02d", selectedMinutes, selectedSeconds ) );
         tvDuration.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( final View v )
             {
-                //when the text view is clicked, show a dialog that will have number spinner
-                Bundle args = new Bundle();
-                args.putString( "title", "Round Duration" );
-                args.putParcelable( "callback", new DurationDialogCallback()
+                DurationPickerDialogFragment.newInstance( "Round Duration", new DurationDialogCallback()
                 {
                     @Override
                     public void onCallback( int minutes, int seconds )
@@ -67,17 +70,11 @@ public class SetupActivity extends AppCompatActivity
                         selectedSeconds = seconds;
                         tvDuration.setText( String.format( "%02d:%02d", minutes, seconds ) );
                     }
-                } );
-                args.putInt( "minMinutes", 0 );
-                args.putInt( "defaultMinutes", selectedMinutes );
-                args.putInt( "maxMinutes", MAX_ROUND_DURATION_MINUTES );
-                args.putInt( "minSeconds", 0 );
-                args.putInt( "defaultSeconds", selectedSeconds );
-                args.putInt( "maxSeconds", MAX_ROUND_DURATION_SECONDS );
-
-                DialogFragment newFragment = new DurationPickerDialogFragment();
-                newFragment.setArguments( args );
-                newFragment.show( getSupportFragmentManager(), "dlg" );
+                } )
+                        .setMinimumDuration( 0, 0 )
+                        .setDefaultDuration( selectedMinutes, selectedSeconds )
+                        .setMaxmimumDuration( MAX_ROUND_DURATION_MINUTES, MAX_ROUND_DURATION_SECONDS )
+                        .show( getSupportFragmentManager(), "dlg" );
             }
         } );
 
@@ -98,10 +95,7 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-                //when the text view is clicked, show a dialog that will have number spinner
-                Bundle args = new Bundle();
-                args.putString( "title", "Maximum Score" );
-                args.putParcelable( "callback", new NumberDialogCallback()
+                NumberPickerDialogFragment.newInstance( "Maximum Score", new NumberDialogCallback()
                 {
                     @Override
                     public void onCallback( int number )
@@ -109,16 +103,15 @@ public class SetupActivity extends AppCompatActivity
                         tvMaxScore.setText( String.valueOf( number ) );
                         maxScore = number;
                     }
-                } );
-                args.putInt( "minValue", MIN_SCORE );
-                args.putInt( "defaultValue", maxScore );
-                args.putInt( "maxValue", MAX_SCORE );
-
-                DialogFragment newFragment = new NumberPickerDialogFragment();
-                newFragment.setArguments( args );
-                newFragment.show( getSupportFragmentManager(), "dlg" );
+                } )
+                        .setDefaultValue( maxScore )
+                        .setMinimumValue( MIN_SCORE )
+                        .setMaximumValue( MAX_SCORE )
+                        .show( getSupportFragmentManager(), "dlg" );
             }
         } );
+
+
 
         cbMaxScore = (CheckBox)findViewById( R.id.cbMaxScore );
         cbMaxScore.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
@@ -138,9 +131,7 @@ public class SetupActivity extends AppCompatActivity
             public void onClick( final View v )
             {
                 //when the text view is clicked, show a dialog that will have number spinner
-                Bundle args = new Bundle();
-                args.putString( "title", "Number of Players" );
-                args.putParcelable( "callback", new NumberDialogCallback()
+                NumberPickerDialogFragment.newInstance( "Number of Players", new NumberDialogCallback()
                 {
                     @Override
                     public void onCallback( int number )
@@ -148,14 +139,46 @@ public class SetupActivity extends AppCompatActivity
                         tvNumPlayers.setText( String.valueOf( number ) );
                         numPlayers = number;
                     }
-                } );
-                args.putInt( "minValue", MIN_PLAYERS );
-                args.putInt( "defaultValue", numPlayers);
-                args.putInt( "maxValue", MAX_PLAYERS);
+                } )
+                        .setMinimumValue( MIN_PLAYERS )
+                        .setMaximumValue( MAX_PLAYERS )
+                        .setDefaultValue( numPlayers )
+                        .show( getSupportFragmentManager(), "dlg" );
+            }
+        } );
 
-                DialogFragment newFragment = new NumberPickerDialogFragment();
-                newFragment.setArguments( args );
-                newFragment.show( getSupportFragmentManager(), "dlg" );
+        cbExclusions = (CheckBox)findViewById( R.id.cbExclusions);
+        cbExclusions.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked )
+            {
+                tvExclusions.setEnabled( isChecked );
+            }
+        } );
+
+        exclusions = new ArrayList<>();
+        exclusions.add( new CheckItem( "X (disambiguation") );
+        exclusions.add( new CheckItem( "List of X" ) );
+
+        tvExclusions = (TextView)findViewById( R.id.tvExclusions);
+        tvExclusions.setText( String.valueOf( numPlayers ) ); //TODO what to put here
+        tvExclusions.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( final View v )
+            {
+                StringListDialogFragment.newInstance( "Exclusions", new StringListDialogCallback()
+                {
+                    @Override
+                    public void onCallback( ArrayList<CheckItem> inExclusions )
+                    {
+                        exclusions = inExclusions;
+                        tvExclusions.setText( String.valueOf( exclusions.get( 0 ).isChecked() ) ); //TODO what to put here
+                    }
+                } )
+                    .setListItems( exclusions )
+                    .show( getSupportFragmentManager(), "dlg" );
             }
         } );
     }
