@@ -75,11 +75,34 @@
                 android:text="DEFAULT"/>
     </LinearLayout>
 
+    <LinearLayout
+            android:id="@+id/exclusionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/durationContainer"
+            android:orientation="horizontal">
+        <CheckBox
+                android:id="@+id/cbExclusions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:checked="true"
+                android:text="Exclusions:"/>
+        <TextView
+                android:id="@+id/tvExclusions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#0000FF"
+                android:text="DEFAULT"/>
+    </LinearLayout>
+
     <Button
             android:id="@+id/btnStartGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/durationContainer"
+            android:layout_below="@+id/exclusionsContainer"
             android:onClick="btnStartGameClick"
             android:text="Start Game"/>
 
