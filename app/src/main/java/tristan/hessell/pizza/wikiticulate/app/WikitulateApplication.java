@@ -1,20 +1,11 @@
 package tristan.hessell.pizza.wikiticulate.app;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
-import org.apache.http.client.methods.HttpGet;
-
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by jsj on 8/08/15.
@@ -43,6 +34,7 @@ public class WikitulateApplication extends Application {
 
     /** The background task responsible for getting new article titles. */
     private RefillArticlesTask mRefiller;
+    private ConfigurationObject configuration;
 
     @Override
     public void onCreate()
@@ -64,12 +56,40 @@ public class WikitulateApplication extends Application {
         mGameTimer = new GameTimer(this);
     }
 
+    public void setConfiguration( ConfigurationObject configuration )
+    {
+        this.configuration = configuration;
+    }
+
     private class RefillArticlesTask extends AsyncTask<Integer, Void, Void> {
         protected Void doInBackground(Integer... counts) {
             List<String> articles = ArticleSource.getArticles(counts[0]);
             mArticleTitles.addAll(articles);
             return null;
         }
+    }
+
+    /**
+     * Not the most efficient way.
+     *
+     * @param articles
+     * @return
+     */
+    private List<String> filterArticles( List<String> articles )
+    {
+        Pattern exclusionRegex = configuration.getExclusionRegex();
+        List<String> tempList = new ArrayList<>( articles );
+
+        for(String article : articles)
+        {
+            if( exclusionRegex.matcher( article ).matches() )
+            {
+                Log.d("WikiApp", "Article " + article + "filtered out");
+                tempList.remove( article );
+            }
+        }
+
+        return tempList;
     }
 
     public void onRoundTimeUp() {
@@ -94,12 +114,7 @@ public class WikitulateApplication extends Application {
         return mRoundScore;
     }
 
-    public int getRoundDuration() {return mRoundDuration;}
-
-    public void setRoundDuration(int inDuration)
-    {
-        mRoundDuration = inDuration;
-    }
+    public int getRoundDuration() {return configuration.getDuration();}
 
     public void scoreOne() {
         mRoundScore++;

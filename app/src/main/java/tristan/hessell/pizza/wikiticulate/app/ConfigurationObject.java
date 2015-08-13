@@ -1,75 +1,47 @@
 package tristan.hessell.pizza.wikiticulate.app;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.regex.Pattern;
 
 /**
+ * Container class for the configuration settings for the game
  * Created by Tristan on 9/08/2015.
  */
-public class ConfigurationObject implements Parcelable
+public class ConfigurationObject
 {
-    //Required for Parcelable (what allows the object to be passed between activities)
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
+    //the number of teams in the game
+    private final int mNumberOfPlayers;
+    //the round duration in milliseconds
+    private final int mDuration;
+    //the score the teams are aiming for
+    private final int mMaxScore;
+    //the regex that will be used to filter out certain articles
+    private final Pattern mExclusionRegex;
+
+    public ConfigurationObject(final int numPlayers, final int dur, final int inMaxScore, final Pattern inRegex)
     {
-        @Override
-        public ConfigurationObject createFromParcel( Parcel source )
-        {
-            return new ConfigurationObject( source );
-        }
-
-        @Override
-        public ConfigurationObject[] newArray( int size )
-        {
-            return new ConfigurationObject[size];
-        }
-    };
-
-    private final int numberOfPlayers;
-    private final int duration; //in milliseconds
-    private final int maxScore;
-
-    public ConfigurationObject(final int numPlayers, final int dur, final int inMaxScore)
-    {
-        numberOfPlayers = numPlayers;
-        duration =        dur;
-        maxScore =        inMaxScore;
-    }
-
-    //constructor that is used when the object is passed between activities
-    public ConfigurationObject(Parcel in)
-    {
-        numberOfPlayers = in.readInt();
-        duration =        in.readInt();
-        maxScore =        in.readInt();
+        mNumberOfPlayers = numPlayers;
+        mDuration =        dur;
+        mMaxScore =        inMaxScore;
+        mExclusionRegex = inRegex;
     }
 
     public int getNumberOfPlayers()
     {
-        return numberOfPlayers;
+        return mNumberOfPlayers;
     }
 
     public int getDuration()
     {
-        return duration;
+        return mDuration;
     }
 
     public int getMaxScore()
     {
-        return maxScore;
+        return mMaxScore;
     }
 
-    //not actually sure what this does - its needed for the Parcelable interface
-    @Override
-    public int describeContents()
+    public Pattern getExclusionRegex()
     {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel( Parcel dest, int flags )
-    {
-        dest.writeInt( numberOfPlayers );
-        dest.writeInt( duration );
-        dest.writeInt( maxScore );
+        return mExclusionRegex;
     }
 }
