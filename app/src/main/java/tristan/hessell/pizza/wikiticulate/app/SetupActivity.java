@@ -1,9 +1,7 @@
 package tristan.hessell.pizza.wikiticulate.app;
 
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +12,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class SetupActivity extends AppCompatActivity
@@ -46,7 +47,9 @@ public class SetupActivity extends AppCompatActivity
     private CheckBox cbExclusions;
     private TextView tvExclusions;
 
-    private ArrayList<CheckItem> exclusions;
+    private ArrayList<CheckItem> exclusionCheckList; //used in the checklist
+    private Map<String, String> exclusionMap; //used to map the exclusion text to the regex
+    private Pattern exclusionRegex; //the final compiled regex
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -61,20 +64,20 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-                DurationPickerDialogFragment.newInstance( "Round Duration", new DurationDialogCallback()
+            DurationPickerDialogFragment.newInstance( "Round Duration", new DurationDialogCallback()
+            {
+                @Override
+                public void onCallback( int minutes, int seconds )
                 {
-                    @Override
-                    public void onCallback( int minutes, int seconds )
-                    {
-                        selectedMinutes = minutes;
-                        selectedSeconds = seconds;
-                        tvDuration.setText( String.format( "%02d:%02d", minutes, seconds ) );
-                    }
-                } )
-                        .setMinimumDuration( 0, 0 )
-                        .setDefaultDuration( selectedMinutes, selectedSeconds )
-                        .setMaxmimumDuration( MAX_ROUND_DURATION_MINUTES, MAX_ROUND_DURATION_SECONDS )
-                        .show( getSupportFragmentManager(), "dlg" );
+                    selectedMinutes = minutes;
+                    selectedSeconds = seconds;
+                    tvDuration.setText( String.format( "%02d:%02d", minutes, seconds ) );
+                }
+            } )
+                .setMinimumDuration( 0, 0 )
+                .setDefaultDuration( selectedMinutes, selectedSeconds )
+                .setMaxmimumDuration( MAX_ROUND_DURATION_MINUTES, MAX_ROUND_DURATION_SECONDS )
+                .show( getSupportFragmentManager(), "dlg" );
             }
         } );
 
@@ -95,23 +98,21 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-                NumberPickerDialogFragment.newInstance( "Maximum Score", new NumberDialogCallback()
+            NumberPickerDialogFragment.newInstance( "Maximum Score", new NumberDialogCallback()
+            {
+                @Override
+                public void onCallback( int number )
                 {
-                    @Override
-                    public void onCallback( int number )
-                    {
-                        tvMaxScore.setText( String.valueOf( number ) );
-                        maxScore = number;
-                    }
-                } )
-                        .setDefaultValue( maxScore )
-                        .setMinimumValue( MIN_SCORE )
-                        .setMaximumValue( MAX_SCORE )
-                        .show( getSupportFragmentManager(), "dlg" );
+                    tvMaxScore.setText( String.valueOf( number ) );
+                    maxScore = number;
+                }
+            } )
+                .setDefaultValue( maxScore )
+                .setMinimumValue( MIN_SCORE )
+                .setMaximumValue( MAX_SCORE )
+                .show( getSupportFragmentManager(), "dlg" );
             }
         } );
-
-
 
         cbMaxScore = (CheckBox)findViewById( R.id.cbMaxScore );
         cbMaxScore.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
@@ -140,10 +141,10 @@ public class SetupActivity extends AppCompatActivity
                         numPlayers = number;
                     }
                 } )
-                        .setMinimumValue( MIN_PLAYERS )
-                        .setMaximumValue( MAX_PLAYERS )
-                        .setDefaultValue( numPlayers )
-                        .show( getSupportFragmentManager(), "dlg" );
+                    .setMinimumValue( MIN_PLAYERS )
+                    .setMaximumValue( MAX_PLAYERS )
+                    .setDefaultValue( numPlayers )
+                    .show( getSupportFragmentManager(), "dlg" );
             }
         } );
 
@@ -157,9 +158,13 @@ public class SetupActivity extends AppCompatActivity
             }
         } );
 
-        exclusions = new ArrayList<>();
-        exclusions.add( new CheckItem( "X (disambiguation") );
-        exclusions.add( new CheckItem( "List of X" ) );
+        exclusionCheckList = new ArrayList<>();
+        exclusionCheckList.add( new CheckItem( "X (disambiguation" ) );
+        exclusionCheckList.add( new CheckItem( "List of X" ) );
+        exclusionMap = new HashMap<>();
+        exclusionMap.put( "X (disambiguation", "\\(disambiguation\\)$" );
+        exclusionMap.put( "List of X", "^List of" );
+
 
         tvExclusions = (TextView)findViewById( R.id.tvExclusions);
         tvExclusions.setText( String.valueOf( numPlayers ) ); //TODO what to put here
@@ -173,11 +178,27 @@ public class SetupActivity extends AppCompatActivity
                     @Override
                     public void onCallback( ArrayList<CheckItem> inExclusions )
                     {
-                        exclusions = inExclusions;
-                        tvExclusions.setText( String.valueOf( exclusions.get( 0 ).isChecked() ) ); //TODO what to put here
+                        /*save the users selections - so if they change their mind, their current selection still stays */
+                        exclusionCheckList = inExclusions;
+
+                        //from the selected inclusions, make the regex string
+                        StringBuilder strBuild = new StringBuilder(  );
+                        for(CheckItem ch : exclusionCheckList )
+                        {
+                            if(ch.isChecked())
+                            {
+                                if(strBuild.length() != 0)
+                                {
+                                    strBuild.append( "|" );
+                                }
+                                strBuild.append( exclusionMap.get( ch.toString() ) );
+                            }
+                        }
+                        tvExclusions.setText( strBuild.toString() );
+                        exclusionRegex = Pattern.compile(strBuild.toString());
                     }
                 } )
-                    .setListItems( exclusions )
+                    .setListItems( exclusionCheckList )
                     .show( getSupportFragmentManager(), "dlg" );
             }
         } );
@@ -217,12 +238,11 @@ public class SetupActivity extends AppCompatActivity
      */
     public void btnStartGameClick(View v)
     {
-        Intent intent = new Intent(this, MainActivity.class);
         //Put everything into a single object to cart the configuration data around in
-        ConfigurationObject conf = new ConfigurationObject( numPlayers, (selectedMinutes* 60 + selectedSeconds) * 1000 , maxScore );
-        //add the configuration data to the intent (which is used to move to the next activity
-        intent.putExtra( "configuration", conf );
-        //move to the next activity
-        startActivity( intent );
+        ConfigurationObject conf = new ConfigurationObject( numPlayers, (selectedMinutes* 60 + selectedSeconds) * 1000 , maxScore, exclusionRegex );
+        //set the configuration of the application
+        ((WikitulateApplication)getApplication()).setConfiguration(conf);
+        //move onto the next activity
+        startActivity( new Intent(this, MainActivity.class) );
     }
 }

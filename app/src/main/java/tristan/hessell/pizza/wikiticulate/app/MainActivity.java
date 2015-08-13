@@ -75,10 +75,6 @@ public class MainActivity extends AppCompatActivity
 
         mApplication = (WikitulateApplication) getApplication();
 
-        ConfigurationObject conf = getIntent().getParcelableExtra( "configuration" );
-        //set the round time
-        mApplication.setRoundDuration( conf.getDuration() );
-
         mTimerText   = (TextView) findViewById(R.id.timerText);
         mArticleText = (TextView) findViewById(R.id.articleTitleText);
 

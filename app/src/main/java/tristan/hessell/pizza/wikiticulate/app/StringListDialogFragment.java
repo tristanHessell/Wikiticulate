@@ -20,7 +20,6 @@ public class StringListDialogFragment extends DialogFragment implements ListView
     private String title;
     private ArrayList<CheckItem> exclusions;
 
-
     public static StringListDialogFragment newInstance(String inTitle, StringListDialogCallback inCb)
     {
         StringListDialogFragment frag = new StringListDialogFragment();
@@ -32,12 +31,10 @@ public class StringListDialogFragment extends DialogFragment implements ListView
         return frag;
     }
 
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         getValuesFromArguments( getArguments() );
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate( R.layout.dialog_string_list, null );
@@ -52,25 +49,30 @@ public class StringListDialogFragment extends DialogFragment implements ListView
         listView.setItemsCanFocus( false );
         listView.setOnItemClickListener( this );
 
-        for (int i = 0; i < exclusions.size(); i++) {
+        //check the items that have already been checked previously
+        for (int i = 0; i < exclusions.size(); i++)
+        {
             listView.setItemChecked(i, exclusions.get( i ).isChecked() );
         }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle( title )
-                .setView(v)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                cb.onCallback(exclusions);
-                            }
-                        })
-                .setNegativeButton( "Cancel",
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick( DialogInterface dialog, int whichButton )
-                            {
-                            }
-                        } );
+            .setView( v )
+            .setPositiveButton( "OK",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick( DialogInterface dialog, int whichButton )
+                    {
+                        cb.onCallback( exclusions );
+                    }
+                } )
+            .setNegativeButton( "Cancel",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick( DialogInterface dialog, int whichButton ) {}
+                } );
         return builder.create();
     }
 
@@ -98,7 +100,7 @@ public class StringListDialogFragment extends DialogFragment implements ListView
         exclusions = args.getParcelableArrayList( "exclusions" );
         if(exclusions == null)
         {
-            throw new IllegalArgumentException( "" );
+            throw new IllegalArgumentException( "Cannot create Dialog: No entries passed via arguments" );
         }
     }
 
@@ -111,7 +113,7 @@ public class StringListDialogFragment extends DialogFragment implements ListView
     @Override
     public void onItemClick( AdapterView<?> parent, View view, int position, long id )
     {
-        AppCompatCheckedTextView check = (AppCompatCheckedTextView)view;
-        exclusions.get( position ).setChecked( check.isChecked() );
+        AppCompatCheckedTextView checkbox = (AppCompatCheckedTextView)view;
+        exclusions.get( position ).setChecked( checkbox.isChecked() );
     }
 }

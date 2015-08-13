@@ -35,8 +35,6 @@ public class DurationPickerDialogFragment extends DialogFragment
         return frag;
     }
 
-
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -75,20 +73,20 @@ public class DurationPickerDialogFragment extends DialogFragment
         builder.setTitle( title )
             .setView( v )
             .setPositiveButton( "OK",
-                    new DialogInterface.OnClickListener()
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface dialog, int whichButton )
                     {
-                        public void onClick( DialogInterface dialog, int whichButton )
-                        {
-                            cb.onCallback( npDurationMinutes.getValue(), npDurationSeconds.getValue() );
-                        }
-                    } )
+                        cb.onCallback( npDurationMinutes.getValue(), npDurationSeconds.getValue() );
+                    }
+                } )
             .setNegativeButton( "Cancel",
-                    new DialogInterface.OnClickListener()
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick( DialogInterface dialog, int whichButton )
                     {
-                        public void onClick( DialogInterface dialog, int whichButton )
-                        {
-                        }
-                    } );
+                    }
+                } );
         return builder.create();
     }
 
