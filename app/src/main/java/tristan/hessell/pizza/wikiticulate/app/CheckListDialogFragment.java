@@ -14,18 +14,22 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class StringListDialogFragment extends DialogFragment implements ListView.OnItemClickListener
+public class CheckListDialogFragment extends DialogFragment implements ListView.OnItemClickListener
 {
-    private StringListDialogCallback cb;
-    private String title;
-    private ArrayList<CheckItem> exclusions;
+    private static final String TITLE_IDENTIFIER    = "title";
+    private static final String CALLBACK_IDENTIFIER = "callback";
+    private static final String ITEMS_IDENTIFIER    = "listItems";
 
-    public static StringListDialogFragment newInstance(String inTitle, StringListDialogCallback inCb)
+    private CheckListDialogCallback cb;
+    private String title;
+    private ArrayList<CheckItem> checkListItems;
+
+    public static CheckListDialogFragment newInstance(String inTitle, CheckListDialogCallback inCb)
     {
-        StringListDialogFragment frag = new StringListDialogFragment();
+        CheckListDialogFragment frag = new CheckListDialogFragment();
         Bundle args = new Bundle();
-        args.putString( "title", inTitle );
-        args.putParcelable( "callback", inCb );
+        args.putString( TITLE_IDENTIFIER, inTitle );
+        args.putParcelable( CALLBACK_IDENTIFIER, inCb );
         frag.setArguments( args );
 
         return frag;
@@ -39,9 +43,9 @@ public class StringListDialogFragment extends DialogFragment implements ListView
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate( R.layout.dialog_string_list, null );
 
-        //get the list view, load it with the exclusions.
+        //get the list view, load it with the items.
         ArrayAdapter<CheckItem> adapter =
-                new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_multiple_choice, exclusions);
+                new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_multiple_choice, checkListItems);
 
         ListView listView = (ListView)v.findViewById( R.id.listview );
         listView.setAdapter( adapter );
@@ -50,9 +54,9 @@ public class StringListDialogFragment extends DialogFragment implements ListView
         listView.setOnItemClickListener( this );
 
         //check the items that have already been checked previously
-        for (int i = 0; i < exclusions.size(); i++)
+        for (int i = 0; i < checkListItems.size(); i++)
         {
-            listView.setItemChecked(i, exclusions.get( i ).isChecked() );
+            listView.setItemChecked(i, checkListItems.get( i ).isChecked() );
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -64,7 +68,7 @@ public class StringListDialogFragment extends DialogFragment implements ListView
                     @Override
                     public void onClick( DialogInterface dialog, int whichButton )
                     {
-                        cb.onCallback( exclusions );
+                        cb.onCallback( checkListItems );
                     }
                 } )
             .setNegativeButton( "Cancel",
@@ -85,28 +89,28 @@ public class StringListDialogFragment extends DialogFragment implements ListView
             throw new IllegalArgumentException( "Cannot create Dialog: No arguments passed to dialog" );
         }
 
-        title = args.getString( "title" );
+        title = args.getString( TITLE_IDENTIFIER );
         if(title == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No Title passed via arguments" );
         }
 
-        cb = args.getParcelable( "callback" );
+        cb = args.getParcelable( CALLBACK_IDENTIFIER );
         if(cb == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No callback passed via arguments" );
         }
 
-        exclusions = args.getParcelableArrayList( "exclusions" );
-        if(exclusions == null)
+        checkListItems = args.getParcelableArrayList( ITEMS_IDENTIFIER );
+        if(checkListItems == null)
         {
-            throw new IllegalArgumentException( "Cannot create Dialog: No entries passed via arguments" );
+            throw new IllegalArgumentException( "Cannot create Dialog: No list entries passed via arguments" );
         }
     }
 
-    public StringListDialogFragment setListItems(ArrayList<CheckItem> list)
+    public CheckListDialogFragment setListItems(ArrayList<CheckItem> list)
     {
-        getArguments().putParcelableArrayList( "exclusions", list );
+        getArguments().putParcelableArrayList( ITEMS_IDENTIFIER, list );
         return this;
     }
 
@@ -114,6 +118,6 @@ public class StringListDialogFragment extends DialogFragment implements ListView
     public void onItemClick( AdapterView<?> parent, View view, int position, long id )
     {
         AppCompatCheckedTextView checkbox = (AppCompatCheckedTextView)view;
-        exclusions.get( position ).setChecked( checkbox.isChecked() );
+        checkListItems.get( position ).setChecked( checkbox.isChecked() );
     }
 }

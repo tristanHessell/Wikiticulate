@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Tristan on 11/08/2015.
  */
-public abstract class StringListDialogCallback implements Parcelable
+public abstract class CheckListDialogCallback implements Parcelable
 {
     public abstract void onCallback( ArrayList<CheckItem> exclusions );
 

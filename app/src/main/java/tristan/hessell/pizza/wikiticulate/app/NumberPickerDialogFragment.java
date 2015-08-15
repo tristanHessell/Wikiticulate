@@ -15,6 +15,12 @@ import java.lang.reflect.Field;
 
 public class NumberPickerDialogFragment extends DialogFragment
 {
+    private static final String TITLE_IDENTIFIER     = "title";
+    private static final String CALLBACK_IDENTIFIER  = "callback";
+    private static final String MIN_VALUE_IDENTIFIER = "minVal";
+    private static final String DEF_VALUE_IDENTIFIER = "defVal";
+    private static final String MAX_VALUE_IDENTIFIER = "maxVal";
+
     private NumberDialogCallback cb;
     private String title;
     private int minNumber;
@@ -25,8 +31,8 @@ public class NumberPickerDialogFragment extends DialogFragment
     {
         NumberPickerDialogFragment frag = new NumberPickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString( "title", inTitle );
-        args.putParcelable( "callback", inCb );
+        args.putString( TITLE_IDENTIFIER, inTitle );
+        args.putParcelable( CALLBACK_IDENTIFIER, inCb );
         frag.setArguments( args );
 
         return frag;
@@ -78,21 +84,21 @@ public class NumberPickerDialogFragment extends DialogFragment
             throw new IllegalArgumentException( "Cannot create Dialog: No arguments passed to dialog" );
         }
 
-        title = args.getString( "title" );
+        title = args.getString( TITLE_IDENTIFIER );
         if(title == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No Title passed via arguments" );
         }
 
-        cb = args.getParcelable( "callback" );
+        cb = args.getParcelable( CALLBACK_IDENTIFIER );
         if(cb == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No callback passed via arguments" );
         }
 
-        minNumber = args.getInt( "minValue", 0 );
-        defaultNumber = args.getInt( "defaultValue", minNumber );
-        maxNumber = args.getInt( "maxValue", defaultNumber );
+        minNumber = args.getInt( MIN_VALUE_IDENTIFIER, 0 );
+        defaultNumber = args.getInt( DEF_VALUE_IDENTIFIER, minNumber );
+        maxNumber = args.getInt( MAX_VALUE_IDENTIFIER, defaultNumber );
     }
 
     //Ill explain this later - cbf atm
@@ -113,19 +119,19 @@ public class NumberPickerDialogFragment extends DialogFragment
 
     public NumberPickerDialogFragment setDefaultValue(int inDefault)
     {
-        getArguments().putInt("defaultValue", inDefault);
+        getArguments().putInt(DEF_VALUE_IDENTIFIER, inDefault);
         return this;
     }
 
     public NumberPickerDialogFragment setMinimumValue(int inMin)
     {
-        getArguments().putInt( "minValue", inMin );
+        getArguments().putInt( MIN_VALUE_IDENTIFIER, inMin );
         return this;
     }
 
     public NumberPickerDialogFragment setMaximumValue(int inMax)
     {
-        getArguments().putInt( "maxValue", inMax );
+        getArguments().putInt( MAX_VALUE_IDENTIFIER, inMax );
         return this;
     }
 }

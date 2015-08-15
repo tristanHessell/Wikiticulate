@@ -15,6 +15,15 @@ import java.lang.reflect.Field;
 
 public class DurationPickerDialogFragment extends DialogFragment
 {
+    private static final String TITLE_IDENTIFIER       = "title";
+    private static final String CALLBACK_IDENTIFIER    = "callback";
+    private static final String MIN_MINUTES_IDENTIFIER = "minMin";
+    private static final String DEF_MINUTES_IDENTIFIER = "defMin";
+    private static final String MAX_MINUTES_IDENTIFIER = "maxMin";
+    private static final String MIN_SECONDS_IDENTIFIER = "minSec";
+    private static final String DEF_SECONDS_IDENTIFIER = "defSec";
+    private static final String MAX_SECONDS_IDENTIFIER = "maxSec";
+
     private DurationDialogCallback cb;
     private String title;
     private int minMinutes;
@@ -28,12 +37,21 @@ public class DurationPickerDialogFragment extends DialogFragment
     {
         DurationPickerDialogFragment frag = new DurationPickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString( "title", inTitle );
-        args.putParcelable( "callback", inCb );
+        args.putString( TITLE_IDENTIFIER, inTitle );
+        args.putParcelable( CALLBACK_IDENTIFIER, inCb );
         frag.setArguments( args );
 
         return frag;
     }
+
+    private static NumberPicker.Formatter timeFormatter = new NumberPicker.Formatter()
+    {
+        @Override
+        public String format( int value )
+        {
+            return String.format( "%02d", value );
+        }
+    };
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -43,15 +61,6 @@ public class DurationPickerDialogFragment extends DialogFragment
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate( R.layout.dialog_duration_picker, null );
-
-        NumberPicker.Formatter timeFormatter = new NumberPicker.Formatter()
-        {
-            @Override
-            public String format( int value )
-            {
-                return String.format( "%02d", value );
-            }
-        };
 
         final NumberPicker npDurationMinutes = (NumberPicker)v.findViewById( R.id.npRoundMinutes );
         npDurationMinutes.setMinValue( minMinutes );
@@ -99,25 +108,25 @@ public class DurationPickerDialogFragment extends DialogFragment
             throw new IllegalArgumentException( "Cannot create Dialog: No arguments passed to dialog" );
         }
 
-        title = args.getString( "title" );
+        title = args.getString( TITLE_IDENTIFIER );
         if(title == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No Title passed via arguments" );
         }
 
-        cb = args.getParcelable( "callback" );
+        cb = args.getParcelable( CALLBACK_IDENTIFIER );
         if(cb == null)
         {
             throw new IllegalArgumentException( "Cannot create Dialog: No callback passed via arguments" );
         }
 
-        minMinutes = args.getInt( "minMinutes", 0 );
-        defaultMinutes = args.getInt( "defaultMinutes", minMinutes );
-        maxMinutes = args.getInt( "maxMinutes", defaultMinutes );
+        minMinutes = args.getInt( MIN_MINUTES_IDENTIFIER, 0 );
+        defaultMinutes = args.getInt( DEF_MINUTES_IDENTIFIER, minMinutes );
+        maxMinutes = args.getInt( MAX_MINUTES_IDENTIFIER, defaultMinutes );
 
-        minSeconds = args.getInt( "minSeconds", 0 );
-        defaultSeconds = args.getInt( "defaultSeconds", minSeconds );
-        maxSeconds = args.getInt( "maxSeconds", defaultSeconds );
+        minSeconds = args.getInt( MIN_SECONDS_IDENTIFIER, 0 );
+        defaultSeconds = args.getInt( DEF_SECONDS_IDENTIFIER, minSeconds );
+        maxSeconds = args.getInt( MAX_SECONDS_IDENTIFIER, defaultSeconds );
     }
 
     private void bugFix(NumberPicker np)
@@ -138,24 +147,24 @@ public class DurationPickerDialogFragment extends DialogFragment
 
     public DurationPickerDialogFragment setMinimumDuration(int minMinutes, int minSeconds)
     {
-        getArguments().putInt( "minMinutes", minMinutes);
-        getArguments().putInt( "minSeconds", minSeconds);
+        getArguments().putInt( MIN_MINUTES_IDENTIFIER, minMinutes);
+        getArguments().putInt( MIN_SECONDS_IDENTIFIER, minSeconds);
 
         return this;
     }
 
     public DurationPickerDialogFragment setMaxmimumDuration(int maxMinutes, int maxSeconds)
     {
-        getArguments().putInt("maxMinutes", maxMinutes);
-        getArguments().putInt("maxSeconds", maxSeconds);
+        getArguments().putInt(MAX_MINUTES_IDENTIFIER, maxMinutes);
+        getArguments().putInt(MAX_SECONDS_IDENTIFIER, maxSeconds);
 
         return this;
     }
 
     public DurationPickerDialogFragment setDefaultDuration(int defaultMinutes, int defaultSeconds)
     {
-        getArguments().putInt( "defaultMinutes", defaultMinutes);
-        getArguments().putInt( "defaultSeconds", defaultSeconds);
+        getArguments().putInt( DEF_MINUTES_IDENTIFIER, defaultMinutes);
+        getArguments().putInt( DEF_SECONDS_IDENTIFIER, defaultSeconds);
 
         return this;
     }

@@ -159,21 +159,20 @@ public class SetupActivity extends AppCompatActivity
         } );
 
         exclusionCheckList = new ArrayList<>();
-        exclusionCheckList.add( new CheckItem( "X (disambiguation" ) );
+        exclusionCheckList.add( new CheckItem( "X (disambiguation)" ) );
         exclusionCheckList.add( new CheckItem( "List of X" ) );
         exclusionMap = new HashMap<>();
-        exclusionMap.put( "X (disambiguation", "\\(disambiguation\\)$" );
-        exclusionMap.put( "List of X", "^List of" );
-
+        exclusionMap.put( "X (disambiguation)", ".* \\(disambiguation\\)$" );
+        exclusionMap.put( "List of X", "^List of .*" );
 
         tvExclusions = (TextView)findViewById( R.id.tvExclusions);
-        tvExclusions.setText( String.valueOf( numPlayers ) ); //TODO what to put here
+        tvExclusions.setText( "See" );
         tvExclusions.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick( final View v )
             {
-                StringListDialogFragment.newInstance( "Exclusions", new StringListDialogCallback()
+                CheckListDialogFragment.newInstance( "Exclusions", new CheckListDialogCallback()
                 {
                     @Override
                     public void onCallback( ArrayList<CheckItem> inExclusions )
@@ -182,20 +181,19 @@ public class SetupActivity extends AppCompatActivity
                         exclusionCheckList = inExclusions;
 
                         //from the selected inclusions, make the regex string
-                        StringBuilder strBuild = new StringBuilder(  );
-                        for(CheckItem ch : exclusionCheckList )
+                        StringBuilder strBuild = new StringBuilder();
+                        for( CheckItem ch : exclusionCheckList )
                         {
-                            if(ch.isChecked())
+                            if( ch.isChecked() )
                             {
-                                if(strBuild.length() != 0)
+                                if( strBuild.length() != 0 )
                                 {
                                     strBuild.append( "|" );
                                 }
                                 strBuild.append( exclusionMap.get( ch.toString() ) );
                             }
                         }
-                        tvExclusions.setText( strBuild.toString() );
-                        exclusionRegex = Pattern.compile(strBuild.toString());
+                        exclusionRegex = Pattern.compile( strBuild.toString() );
                     }
                 } )
                     .setListItems( exclusionCheckList )
@@ -203,7 +201,6 @@ public class SetupActivity extends AppCompatActivity
             }
         } );
     }
-
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu )
