@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#0000FF"
+                android:textColor="@drawable/setup_link_text_color"
                 android:text="DEFAULT"/>
     </LinearLayout>
 
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#0000FF"
+                android:textColor="@drawable/setup_link_text_color"
                 android:text="DEFAULT"/>
     </LinearLayout>
 
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#0000FF"
+                android:textColor="@drawable/setup_link_text_color"
                 android:text="DEFAULT"/>
     </LinearLayout>
 
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#0000FF"
+                android:textColor="@drawable/setup_link_text_color"
                 android:text="DEFAULT"/>
     </LinearLayout>
 
