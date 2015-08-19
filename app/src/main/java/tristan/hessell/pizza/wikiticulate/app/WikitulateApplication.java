@@ -18,17 +18,7 @@ import java.util.regex.Pattern;
  */
 public class WikitulateApplication extends Application {
 
-    /** The point at which the article downloader will stop. */
-    final static private int           HIGHWATER = 30;
-
-    /** The point at which the article downloader will start */
-    final static private int           LOWWATER  = 10;
-
-    /** A queue of article titles. */
-    private Queue<String>      mArticleTitles;
-
     private GameTimer          mGameTimer;
-
     private int mRound;
     private int mRoundScore;
     private boolean mRoundInProgress;
@@ -40,7 +30,6 @@ public class WikitulateApplication extends Application {
     String mCurrentArticle;
 
     /** The background task responsible for getting new article titles. */
-    private RefillArticlesTask mRefiller;
     private ConfigurationObject configuration;
 
     @Override
@@ -51,23 +40,21 @@ public class WikitulateApplication extends Application {
         mRound = 0;
         mRoundScore = 0;
         mRoundInProgress = false;
-
-        mArticleTitles = new LinkedList<String>();
         mCurrentArticle = "";
 
-        mRefiller = new RefillArticlesTask();
-
-
-
-        /* Get the smallest number of articles to begin with as we don't want setup to take long. */
-        // mRefiller.execute(LOWWATER);
-
-        /* Example use of assets. */
+        /*
+        This uses a local file as the word source.
+        */
         try {
             mWordSource = new InputStreamSource(getAssets().open("words.txt"));
         } catch (java.io.IOException ex) {
             Log.e("WORDS", ex.getMessage());
         }
+
+        /*
+        This uses Wikipedia as the word source.
+         */
+        // mWordSource = new WikipediaWordSource(false);
 
         mWordSource.shuffle();
 
@@ -78,14 +65,6 @@ public class WikitulateApplication extends Application {
     public void setConfiguration( ConfigurationObject configuration )
     {
         this.configuration = configuration;
-    }
-
-    private class RefillArticlesTask extends AsyncTask<Integer, Void, Void> {
-        protected Void doInBackground(Integer... counts) {
-            List<String> articles = ArticleSource.getArticles(counts[0]);
-            mArticleTitles.addAll(articles);
-            return null;
-        }
     }
 
     /**
@@ -161,17 +140,6 @@ public class WikitulateApplication extends Application {
     public String getNextArticle() {
         mCurrentArticle = mWordSource.getNext().toString();
         Log.d("WORDS:", mCurrentArticle);
-//        mCurrentArticle = mArticleTitles.remove();
-
-        /* Try and refill the articles if we have reached the low water mark, but check that we
-        * are not already doing it first. */
-//        if(mArticleTitles.size() <= LOWWATER) {
-//            if(mRefiller.getStatus() != AsyncTask.Status.RUNNING)
-//            {
-//                mRefiller = new RefillArticlesTask();
-//                mRefiller.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, HIGHWATER - LOWWATER);
-//            }
-//        }
         return mCurrentArticle;
     }
 
