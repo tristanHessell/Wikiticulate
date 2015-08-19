@@ -4,6 +4,8 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -51,7 +53,19 @@ public class WikitulateApplication extends Application {
         mRefiller = new RefillArticlesTask();
 
         /* Get the smallest number of articles to begin with as we don't want setup to take long. */
-        mRefiller.execute(LOWWATER);
+        // mRefiller.execute(LOWWATER);
+
+        /* Example use of assets. */
+        try {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(getAssets().open("words.txt")));
+            for(String line; (line = br.readLine()) != null; ) {
+                mArticleTitles.add(line);
+            }
+        } catch (java.io.IOException ex) {
+            Log.e("WORDS", ex.getMessage());
+        }
+
 
         mGameTimer = new GameTimer(this);
     }
