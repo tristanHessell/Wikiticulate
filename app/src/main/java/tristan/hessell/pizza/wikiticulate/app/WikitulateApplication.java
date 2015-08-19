@@ -4,6 +4,10 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.thirteen.words.InputStreamSource;
+import com.thirteen.words.WikipediaWordSource;
+import com.thirteen.words.WordSource;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -28,6 +32,7 @@ public class WikitulateApplication extends Application {
     private int mRound;
     private int mRoundScore;
     private boolean mRoundInProgress;
+    private WordSource mWordSource;
 
     //The length of the round in milliseconds. Default of 5 seconds
     private int mRoundDuration = 5 * 1000;
@@ -52,19 +57,19 @@ public class WikitulateApplication extends Application {
 
         mRefiller = new RefillArticlesTask();
 
+
+
         /* Get the smallest number of articles to begin with as we don't want setup to take long. */
         // mRefiller.execute(LOWWATER);
 
         /* Example use of assets. */
         try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(getAssets().open("words.txt")));
-            for(String line; (line = br.readLine()) != null; ) {
-                mArticleTitles.add(line);
-            }
+            mWordSource = new InputStreamSource(getAssets().open("words.txt"));
         } catch (java.io.IOException ex) {
             Log.e("WORDS", ex.getMessage());
         }
+
+        mWordSource.shuffle();
 
 
         mGameTimer = new GameTimer(this);
@@ -146,7 +151,7 @@ public class WikitulateApplication extends Application {
     }
 
     public int getArticleCount() {
-        return mArticleTitles.size();
+        return mWordSource.getCount();
     }
 
     public String getCurrentArticle() {
@@ -154,17 +159,19 @@ public class WikitulateApplication extends Application {
     }
 
     public String getNextArticle() {
-        mCurrentArticle = mArticleTitles.remove();
+        mCurrentArticle = mWordSource.getNext().toString();
+        Log.d("WORDS:", mCurrentArticle);
+//        mCurrentArticle = mArticleTitles.remove();
 
         /* Try and refill the articles if we have reached the low water mark, but check that we
         * are not already doing it first. */
-        if(mArticleTitles.size() <= LOWWATER) {
-            if(mRefiller.getStatus() != AsyncTask.Status.RUNNING)
-            {
-                mRefiller = new RefillArticlesTask();
-                mRefiller.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, HIGHWATER - LOWWATER);
-            }
-        }
+//        if(mArticleTitles.size() <= LOWWATER) {
+//            if(mRefiller.getStatus() != AsyncTask.Status.RUNNING)
+//            {
+//                mRefiller = new RefillArticlesTask();
+//                mRefiller.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, HIGHWATER - LOWWATER);
+//            }
+//        }
         return mCurrentArticle;
     }
 
