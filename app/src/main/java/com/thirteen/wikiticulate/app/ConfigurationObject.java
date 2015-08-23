@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.wikiticulate.app;
 
 import java.util.regex.Pattern;
 

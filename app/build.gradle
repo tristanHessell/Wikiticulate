@@ -17,7 +17,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "tristan.hessell.pizza.wikiticulate.app"
+        applicationId "com.thirteen.wikiticulate.app"
         minSdkVersion 11
         targetSdkVersion 22
         versionCode 1

@@ -1,9 +1,7 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.wikiticulate.app;
 
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import com.thirteen.wikiticulate.app.R;
 
 import java.lang.reflect.Field;
 
@@ -24,7 +25,7 @@ public class DurationPickerDialogFragment extends DialogFragment
     private static final String DEF_SECONDS_IDENTIFIER = "defSec";
     private static final String MAX_SECONDS_IDENTIFIER = "maxSec";
 
-    private DurationDialogCallback cb;
+    private DialogCallback cb;
     private String title;
     private int minMinutes;
     private int defaultMinutes;
@@ -33,7 +34,7 @@ public class DurationPickerDialogFragment extends DialogFragment
     private int defaultSeconds;
     private int maxSeconds;
 
-    public static DurationPickerDialogFragment newInstance(String inTitle, DurationDialogCallback inCb)
+    public static DurationPickerDialogFragment newInstance(String inTitle, DialogCallback inCb)
     {
         DurationPickerDialogFragment frag = new DurationPickerDialogFragment();
         Bundle args = new Bundle();

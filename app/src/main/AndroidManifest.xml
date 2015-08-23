@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tristan.hessell.pizza.wikiticulate.app" >
+    package="com.thirteen.wikiticulate.app" >
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -14,7 +14,7 @@
 
         </activity>
         <activity
-            android:name=".SetupActivity"
+            android:name="com.thirteen.dialogs.SetupActivity"
             android:label="@string/title_activity_setup" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,10 +1,8 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.wikiticulate.app;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,9 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.Formatter;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
 {

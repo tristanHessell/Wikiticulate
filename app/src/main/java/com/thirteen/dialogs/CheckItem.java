@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.dialogs;
 
 import android.os.Parcel;
 import android.os.Parcelable;

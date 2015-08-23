@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.dialogs;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import com.thirteen.wikiticulate.app.ConfigurationObject;
+import com.thirteen.wikiticulate.app.MainActivity;
+import com.thirteen.wikiticulate.app.R;
+import com.thirteen.wikiticulate.app.WikitulateApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +68,7 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-            DurationPickerDialogFragment.newInstance( "Round Duration", new DurationDialogCallback()
+            DurationPickerDialogFragment.newInstance( "Round Duration", new DialogCallback()
             {
                 @Override
                 public void onCallback( int minutes, int seconds )
@@ -98,15 +102,15 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-            NumberPickerDialogFragment.newInstance( "Maximum Score", new NumberDialogCallback()
-            {
-                @Override
-                public void onCallback( int number )
+                NumberPickerDialogFragment.newInstance( "Maximum Score", new DialogCallback()
                 {
-                    tvMaxScore.setText( String.valueOf( number ) );
-                    maxScore = number;
-                }
-            } )
+                    @Override
+                    public void onCallback( int number )
+                    {
+                        tvMaxScore.setText( String.valueOf( number ) );
+                        maxScore = number;
+                    }
+                } )
                 .setDefaultValue( maxScore )
                 .setMinimumValue( MIN_SCORE )
                 .setMaximumValue( MAX_SCORE )
@@ -131,8 +135,7 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-                //when the text view is clicked, show a dialog that will have number spinner
-                NumberPickerDialogFragment.newInstance( "Number of Players", new NumberDialogCallback()
+                NumberPickerDialogFragment.newInstance( "Number of Players", new DialogCallback()
                 {
                     @Override
                     public void onCallback( int number )
@@ -172,14 +175,14 @@ public class SetupActivity extends AppCompatActivity
             @Override
             public void onClick( final View v )
             {
-                CheckListDialogFragment.newInstance( "Exclusions", new CheckListDialogCallback()
+                CheckListDialogFragment.newInstance( "Exclusions", new DialogCallback()
                 {
                     @Override
                     public void onCallback( ArrayList<CheckItem> inExclusions )
                     {
                         /*save the users selections - so if they change their mind, their current selection still stays */
                         exclusionCheckList = inExclusions;
-
+                        //TODO make this cleaner
                         //from the selected inclusions, make the regex string
                         StringBuilder strBuild = new StringBuilder();
                         for( CheckItem ch : exclusionCheckList )
@@ -235,6 +238,7 @@ public class SetupActivity extends AppCompatActivity
      */
     public void btnStartGameClick(View v)
     {
+        //TODO have no exclusion regex if the cb is unchecked.
         //Put everything into a single object to cart the configuration data around in
         ConfigurationObject conf = new ConfigurationObject( numPlayers, (selectedMinutes* 60 + selectedSeconds) * 1000 , maxScore, exclusionRegex );
         //set the configuration of the application

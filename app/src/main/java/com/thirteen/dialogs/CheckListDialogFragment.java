@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.thirteen.wikiticulate.app.R;
 
 import java.util.ArrayList;
 
@@ -20,11 +21,11 @@ public class CheckListDialogFragment extends DialogFragment implements ListView.
     private static final String CALLBACK_IDENTIFIER = "callback";
     private static final String ITEMS_IDENTIFIER    = "listItems";
 
-    private CheckListDialogCallback cb;
+    private DialogCallback cb;
     private String title;
     private ArrayList<CheckItem> checkListItems;
 
-    public static CheckListDialogFragment newInstance(String inTitle, CheckListDialogCallback inCb)
+    public static CheckListDialogFragment newInstance(String inTitle, DialogCallback inCb)
     {
         CheckListDialogFragment frag = new CheckListDialogFragment();
         Bundle args = new Bundle();

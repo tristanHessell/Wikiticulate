@@ -1,16 +1,12 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.wikiticulate.app;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
-
 import com.thirteen.words.InputStreamSource;
-import com.thirteen.words.WikipediaWordSource;
 import com.thirteen.words.WordSource;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**

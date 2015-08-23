@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.wikiticulate.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

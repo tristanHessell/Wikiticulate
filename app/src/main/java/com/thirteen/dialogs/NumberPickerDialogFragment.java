@@ -1,4 +1,4 @@
-package tristan.hessell.pizza.wikiticulate.app;
+package com.thirteen.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import com.thirteen.wikiticulate.app.R;
 
 import java.lang.reflect.Field;
 
@@ -21,13 +22,13 @@ public class NumberPickerDialogFragment extends DialogFragment
     private static final String DEF_VALUE_IDENTIFIER = "defVal";
     private static final String MAX_VALUE_IDENTIFIER = "maxVal";
 
-    private NumberDialogCallback cb;
+    private DialogCallback cb;
     private String title;
     private int minNumber;
     private int maxNumber;
     private int defaultNumber;
 
-    public static NumberPickerDialogFragment newInstance(String inTitle, NumberDialogCallback inCb)
+    public static NumberPickerDialogFragment newInstance(String inTitle, DialogCallback inCb)
     {
         NumberPickerDialogFragment frag = new NumberPickerDialogFragment();
         Bundle args = new Bundle();
