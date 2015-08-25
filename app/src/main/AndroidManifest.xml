@@ -14,7 +14,7 @@
 
         </activity>
         <activity
-            android:name="com.thirteen.dialogs.SetupActivity"
+            android:name=".SetupActivity"
             android:label="@string/title_activity_setup" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

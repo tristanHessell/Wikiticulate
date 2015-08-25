@@ -6,7 +6,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context="com.thirteen.dialogs.SetupActivity">
+                tools:context="com.thirteen.wikiticulate.app.SetupActivity">
 
     <LinearLayout
             android:id="@+id/numPlayersContainer"
@@ -75,7 +75,7 @@
                 android:text="DEFAULT"/>
     </LinearLayout>
 
-    <LinearLayout
+    <!-- <LinearLayout
             android:id="@+id/exclusionsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,13 +96,36 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@drawable/setup_link_text_color"
                 android:text="DEFAULT"/>
+    </LinearLayout> -->
+
+    <LinearLayout
+            android:id="@+id/TopicsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/durationContainer"
+            android:orientation="horizontal">
+        <CheckBox
+                android:id="@+id/cbTopics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:checked="true"
+                android:text="Topics:"/>
+        <TextView
+                android:id="@+id/tvTopics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@drawable/setup_link_text_color"
+                android:text="DEFAULT"/>
     </LinearLayout>
 
     <Button
             android:id="@+id/btnStartGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/exclusionsContainer"
+            android:layout_below="@+id/TopicsContainer"
             android:onClick="btnStartGameClick"
             android:text="Start Game"/>
 

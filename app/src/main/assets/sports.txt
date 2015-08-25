@@ -1,0 +1,84 @@
+Archery
+Athletics 
+Billiards
+Bobsleigh
+Bowling
+Boxing
+Canoe
+Canoe Slalom
+Chess
+Climbing
+Cross Country Skiing
+Cross Country Running
+Cycling
+Dancing
+Darts
+Discus
+Downhill Skiing
+Fencing
+Figure
+Skating
+Fishing
+Formula 1
+Giant
+Slalom
+Gliding
+Gymnastics
+Hammer Throwing
+Hang-Gliding
+Diving
+High jump
+Hiking
+Horse
+Racing
+Hunting
+Hurdle Race
+Ice Hockey
+Javelin
+Jogging
+Kayak
+Long jump
+Luge
+Modern
+Pentathlon
+Motorsports
+Mountaineering
+Netball
+Orienteering
+Paintball
+Parachuting
+Pole Vault
+Relay
+Rhythmic
+Gymnastics
+Equestrian
+Rope
+Skipping
+Rowing
+100m Sprint
+Running
+Sailing
+Shooting
+Shot Put
+Skateboarding
+Skating
+Ski Jumping
+Skiing
+Snowboarding
+Soccer
+Speed
+Skating
+Sprint
+Surfing
+Swimming
+Synchronized Swimming
+Table
+Tennis
+Track and Field 
+Tug-of-War
+Walking
+Water Polo
+Waterskiing
+Weight Lifting
+Windsurfing
+Wrestling

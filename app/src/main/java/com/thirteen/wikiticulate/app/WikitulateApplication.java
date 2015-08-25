@@ -58,9 +58,26 @@ public class WikitulateApplication extends Application {
         mGameTimer = new GameTimer(this);
     }
 
+    //when the configuration changes, the word source changes
     public void setConfiguration( ConfigurationObject configuration )
     {
         this.configuration = configuration;
+        List<String> topics = configuration.getTopics();
+        if(topics != null)
+        {
+            for(String topic : topics)
+            {
+                try
+                {
+                    mWordSource = new InputStreamSource(getAssets().open(topic));
+                }
+                catch (java.io.IOException ex)
+                {
+                    Log.e("WORDS", ex.getMessage());
+                }
+            }
+
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.thirteen.dialogs;
+package com.thirteen.wikiticulate.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,15 +10,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import com.thirteen.wikiticulate.app.ConfigurationObject;
-import com.thirteen.wikiticulate.app.MainActivity;
-import com.thirteen.wikiticulate.app.R;
-import com.thirteen.wikiticulate.app.WikitulateApplication;
+import com.thirteen.dialogs.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 
 public class SetupActivity extends AppCompatActivity
@@ -48,12 +45,22 @@ public class SetupActivity extends AppCompatActivity
     private int numPlayers = DEFAULT_PLAYERS;
     private int selectedMinutes = DEFAULT_ROUND_DURATION_MINUTES;
     private int selectedSeconds = DEFAULT_ROUND_DURATION_SECONDS;
+
+    /*
     private CheckBox cbExclusions;
     private TextView tvExclusions;
 
     private ArrayList<CheckItem> exclusionCheckList; //used in the checklist
     private Map<String, String> exclusionMap; //used to map the exclusion text to the regex
     private Pattern exclusionRegex; //the final compiled regex
+    */
+
+    private CheckBox cbTopics;
+    private TextView tvTopics;
+
+    private ArrayList<CheckItem> topicCheckList; //used in the checklist
+    private Map<String, String> topicMap; //used to map the exclusion text to the regex
+    private final List<String> selectedTopics = new ArrayList<String>();
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -151,6 +158,7 @@ public class SetupActivity extends AppCompatActivity
             }
         } );
 
+        /*
         cbExclusions = (CheckBox)findViewById( R.id.cbExclusions);
         cbExclusions.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
         {
@@ -180,7 +188,7 @@ public class SetupActivity extends AppCompatActivity
                     @Override
                     public void onCallback( ArrayList<CheckItem> inExclusions )
                     {
-                        /*save the users selections - so if they change their mind, their current selection still stays */
+                        //save the users selections - so if they change their mind, their current selection still stays //
                         exclusionCheckList = inExclusions;
                         //TODO make this cleaner
                         //from the selected inclusions, make the regex string
@@ -202,7 +210,69 @@ public class SetupActivity extends AppCompatActivity
                     .setListItems( exclusionCheckList )
                     .show( getSupportFragmentManager(), "dlg" );
             }
+        } ); */
+        //////////////////////////////////////////////////////////////////////////////////////////////
+
+        cbTopics = (CheckBox)findViewById( R.id.cbTopics);
+        cbTopics.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked )
+            {
+                tvTopics.setEnabled( isChecked );
+            }
         } );
+
+        topicCheckList = new ArrayList<>();
+        topicCheckList.add( new CheckItem( "Science"    ) );
+        topicCheckList.add( new CheckItem( "Animals"    ) );
+        topicCheckList.add( new CheckItem( "Plants"     ) );
+        topicCheckList.add( new CheckItem( "Food"       ) );
+        topicCheckList.add( new CheckItem( "Chemistry"  ) );
+        topicCheckList.add( new CheckItem( "Sports"     ) );
+        topicCheckList.add( new CheckItem( "Books"      ) );
+        topicCheckList.add( new CheckItem( "Places"     ) );
+        topicCheckList.add( new CheckItem( "Dictionary" ) );
+
+        topicMap = new HashMap<>();
+        topicMap.put( "Science"   , "science.txt"   );
+        topicMap.put( "Animals"   , "animals.txt"   );
+        topicMap.put( "Plants"    , "plants.txt"    );
+        topicMap.put( "Sports"    , "sports.txt"    );
+        topicMap.put( "Chemistry" , "chemistry.txt" );
+        topicMap.put( "Food"      , "food.txt"      );
+        topicMap.put( "Books"     , "books.txt"     );
+        topicMap.put( "Places"    , "places.txt"    );
+        topicMap.put( "Dictionary", "words.txt"     );
+
+        tvTopics = (TextView)findViewById( R.id.tvTopics);
+        tvTopics.setText( "See" );
+        tvTopics.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( final View v )
+            {
+                CheckListDialogFragment.newInstance( "Topics", new DialogCallback()
+                {
+                    @Override
+                    public void onCallback( ArrayList<CheckItem> inExclusions )
+                    {
+                        selectedTopics.clear();
+                        topicCheckList = inExclusions;
+                        for( CheckItem chkIt: topicCheckList )
+                        {
+                            if(chkIt.isChecked())
+                            {
+                                selectedTopics.add( topicMap.get( chkIt.toString() ) );
+                            }
+                        }
+                    }
+                } )
+                    .setListItems( topicCheckList )
+                    .show( getSupportFragmentManager(), "dlg" );
+            }
+        } );
+
     }
 
     @Override
@@ -240,7 +310,7 @@ public class SetupActivity extends AppCompatActivity
     {
         //TODO have no exclusion regex if the cb is unchecked.
         //Put everything into a single object to cart the configuration data around in
-        ConfigurationObject conf = new ConfigurationObject( numPlayers, (selectedMinutes* 60 + selectedSeconds) * 1000 , maxScore, exclusionRegex );
+        ConfigurationObject conf = new ConfigurationObject( numPlayers, (selectedMinutes* 60 + selectedSeconds) * 1000 , maxScore, selectedTopics );
         //set the configuration of the application
         ((WikitulateApplication)getApplication()).setConfiguration(conf);
         //move onto the next activity

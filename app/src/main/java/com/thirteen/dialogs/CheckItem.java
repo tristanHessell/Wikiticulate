@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Cant make this generic unfortunately, due to the parcelable interface.
+ *
  * Created by Tristan on 13/08/2015.
  */
 public class CheckItem implements Parcelable
@@ -49,7 +51,7 @@ public class CheckItem implements Parcelable
     public void writeToParcel( Parcel dest, int flags )
     {
         dest.writeString( mString );
-        dest.writeByte( (byte)(mChecked ? 1 : 0 )); //parcels dont take booleans
+        dest.writeByte( (byte)(mChecked ? 1 : 0 )); //parcels don't take booleans
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
