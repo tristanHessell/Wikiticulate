@@ -1,5 +1,7 @@
 package com.thirteen.wikiticulate.app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity
+public class GameActivity extends AppCompatActivity
 {
     private int      mNumPlayers;
     private TextView mArticleText;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity
                 if(mApplication.getTimer().getRoundTime() > 0) {
                     started = true;
                 }
-//                Log.v("MainActivity", "PollTimer Tick");
+//                Log.v("GameActivity", "PollTimer Tick");
                 publishProgress();
                 SystemClock.sleep(30);
             }
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity
             String time = String.format("%02d:%02d:%03d", 0, 0, 0);
             mTimerText.setText(time);
 
-            Log.d("MainActivity", "Polltimer finished");
+            Log.d("GameActivity", "Polltimer finished");
             endRound();
 //            mTimerText.setTextColor(Color.parseColor("#FF0000"));
         }
@@ -54,10 +56,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        Log.e("MainActivity", "OnDestroy");
+        Log.e("GameActivity", "OnDestroy");
         super.onDestroy();
         if(mPollTimer != null) {
-            Log.e("MainActivity", "Cancelling polltimer");
+            Log.e("GameActivity", "Cancelling polltimer");
             mPollTimer.cancel(true);
         }
     }
@@ -73,20 +75,20 @@ public class MainActivity extends AppCompatActivity
         mTimerText   = (TextView) findViewById(R.id.timerText);
         mArticleText = (TextView) findViewById(R.id.articleTitleText);
 
-        Log.d( "MainActivity",
+        Log.d( "GameActivity",
                 mApplication.getArticleCount() + " articles available after onCreate()" );
 
         if(mApplication.isRoundInProgress()) {
-            Log.d("MainActivity", "Creating MainActivity in Round Mode.");
+            Log.d("GameActivity", "Creating GameActivity in Round Mode.");
             setInRoundMode();
         } else {
-            Log.d( "MainActivity", "Creating MainActivity in Out of Round Mode." );
+            Log.d( "GameActivity", "Creating GameActivity in Out of Round Mode." );
             setOutOfRoundMode();
         }
     }
 
     private void setInRoundMode() {
-        Log.d("MainActivity", "Creating PollTimer");
+        Log.d("GameActivity", "Creating PollTimer");
         mPollTimer = new PollTimerTask();
         mPollTimer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         mArticleText.setText(mApplication.getCurrentArticle());
@@ -94,30 +96,34 @@ public class MainActivity extends AppCompatActivity
         Button passButton = (Button) findViewById(R.id.passButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
         Button startButton = (Button) findViewById(R.id.startButton);
+        Button endButton = (Button) findViewById( R.id.endButton );
 
         /* TODO: only if the game rules are "most you can get in a time limit" rather than "Fastest you can get one"*/
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
         scoreText.setVisibility( View.VISIBLE );
         scoreText.setText( "" + mApplication.getRoundScore() );
 
-        passButton.setVisibility(View.VISIBLE);
+        passButton.setVisibility( View.VISIBLE );
         nextButton.setVisibility(View.VISIBLE);
+        endButton.setVisibility( View.VISIBLE );
         startButton.setVisibility(View.GONE);
         mTimerText.setTextColor( Color.parseColor( "#000000" ) );
     }
 
     private void setOutOfRoundMode() {
         if(mPollTimer != null) {
-            Log.e("MainActivity", "Cancelling polltimer");
+            Log.e("GameActivity", "Cancelling polltimer");
             mPollTimer.cancel(true);
         }
         mArticleText.setVisibility(View.GONE);
         Button passButton = (Button) findViewById(R.id.passButton);
         Button nextButton = (Button) findViewById(R.id.nextButton);
         Button startButton = (Button) findViewById(R.id.startButton);
+        Button endButton = (Button) findViewById( R.id.endButton );
 
         passButton.setVisibility( View.GONE );
         nextButton.setVisibility( View.GONE );
+        endButton.setVisibility( View.GONE );
         startButton.setVisibility(View.VISIBLE);
 
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
@@ -127,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
     private void endRound() {
         if(mPollTimer != null) {
-            Log.e("MainActivity", "Cancelling polltimer");
+            Log.e("GameActivity", "Cancelling polltimer");
             mPollTimer.cancel(true);
         }
         mArticleText.setVisibility(View.VISIBLE);
@@ -141,6 +147,8 @@ public class MainActivity extends AppCompatActivity
         passButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
         startButton.setVisibility( View.GONE );
+
+
     }
 
     private void startRound() {
@@ -157,18 +165,22 @@ public class MainActivity extends AppCompatActivity
     private void pass() {
         if(mApplication.getArticleCount() > 0)
         {
-            mArticleText.setText(mApplication.getNextArticle());
+            //add the word to the passed words
+            mApplication.passWord();
+            mArticleText.setText( mApplication.getNextArticle() );
         }
     }
 
     private void next() {
+        //why is only this bit in the conditional
         if(mApplication.getArticleCount() > 0)
         {
+            //add the word to the scored words
+            mApplication.scoreWord();
             mArticleText.setText(mApplication.getNextArticle());
         }
 
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
-        mApplication.scoreOne();
         scoreText.setText("" + mApplication.getRoundScore());
     }
 
@@ -187,6 +199,43 @@ public class MainActivity extends AppCompatActivity
     public void onStartBtnClicked(View v){
         if(v.getId() == R.id.startButton){
             startRound();
+        }
+    }
+
+    public void onEndBtnClicked(View v){
+        if(v.getId() == R.id.endButton){
+            if( mApplication.isRoundInProgress() )
+            {
+                new AlertDialog.Builder( this )
+                        .setTitle( "End the round?" )
+                        .setMessage( "Are you sure you want to end the round?" )
+                        .setPositiveButton( "Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick( DialogInterface dialog, int which )
+                            {
+                                mApplication.stopRound();
+                                setResult( RESULT_OK );
+                                finish();
+                            }
+                        } )
+                        .setNegativeButton( "No", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick( DialogInterface dialog, int which )
+                            {
+                                //
+                            }
+                        } )
+                        .show();
+            }
+            else
+            {
+                //just go back to lobby
+                setResult( RESULT_OK );
+                finish();
+
+            }
         }
     }
 

@@ -43,6 +43,17 @@
         android:onClick="onPassBtnClicked" />
 
     <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="END"
+            android:id="@+id/endButton"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/passButton"
+            android:visibility="gone"
+            android:overScrollMode="ifContentScrolls"
+            android:onClick="onEndBtnClicked" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="NEXT"

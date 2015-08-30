@@ -314,6 +314,6 @@ public class SetupActivity extends AppCompatActivity
         //set the configuration of the application
         ((WikitulateApplication)getApplication()).setConfiguration(conf);
         //move onto the next activity
-        startActivity( new Intent(this, MainActivity.class) );
+        startActivity( new Intent(this, LobbyActivity.class) );
     }
 }

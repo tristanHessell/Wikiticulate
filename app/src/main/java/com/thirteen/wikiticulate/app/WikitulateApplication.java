@@ -20,6 +20,9 @@ public class WikitulateApplication extends Application {
     private boolean mRoundInProgress;
     private WordSource mWordSource;
 
+    private final ArrayList<Round> mRounds = new ArrayList<>();
+    private Round currentRound;
+
     //The length of the round in milliseconds. Default of 5 seconds
     private int mRoundDuration = 5 * 1000;
 
@@ -119,6 +122,7 @@ public class WikitulateApplication extends Application {
         mRound++;
         mRoundScore = 0;
         mRoundInProgress = true;
+        currentRound = new Round("dank m3m3r");
     }
 
     public int getRoundScore() {
@@ -127,15 +131,30 @@ public class WikitulateApplication extends Application {
 
     public int getRoundDuration() {return configuration.getDuration();}
 
-    public void scoreOne() {
-        mRoundScore++;
-    }
-
     public void stopRound(){
         if(!mRoundInProgress) {
             // bad
         }
         mRoundInProgress = false;
+        mRounds.add( currentRound );
+    }
+
+    public void scoreWord()
+    {
+        mRoundScore++;
+        //add current word to the scored words list
+        currentRound.addScoredWord( mCurrentArticle );
+    }
+
+    public void passWord()
+    {
+        //add current word to the passed words list
+        currentRound.addPassedWord( mCurrentArticle );
+    }
+
+    public Round getCurrentRound()
+    {
+        return currentRound;
     }
 
     public GameTimer getTimer() {
